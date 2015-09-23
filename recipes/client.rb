@@ -17,6 +17,10 @@
 # limitations under the License.
 #
 
+include_recipe 'openssl::default'
+
+::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
+
 node.set_unless['bareos']['fd_password'] = secure_password
 node.set_unless['bareos']['mon_password'] = secure_password
 node.save unless Chef::Config[:solo]
