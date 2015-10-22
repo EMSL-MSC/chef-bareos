@@ -36,7 +36,7 @@ Messages {
 Device {  
   Name = FileStorage  
   Media Type = File  
-  Archive Device = node['bareos']['storage']['file_storage_path']
+  Archive Device = <%= node['bareos']['storage']['file_storage_path'] %>
   Random Access = Yes;  
   AutomaticMount = yes;  
   RemovableMedia = no;  
