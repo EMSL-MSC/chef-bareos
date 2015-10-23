@@ -17,7 +17,7 @@
 # limitations under the License.
 
 # By default here including both the repo and client recipes
-include_recipe 'chef-bareos'
+include_recipe 'chef-bareos::repo'
 
 # Preparing Random Password for the director and mon, including OpenSSL library from client.rb
 node.set_unless['bareos']['dir_password'] = random_password(length: 30, mode: :base64)
@@ -106,3 +106,5 @@ service 'bareos-dir' do
   supports status: true, restart: true, reload: false
   action [:enable, :start]
 end
+
+include_recipe 'chef-bareos::client'
