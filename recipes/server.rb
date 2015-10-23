@@ -75,16 +75,19 @@ else
   bareos_clients = search(:node, 'roles:bareos_client')
 end
 
+node.default['bareos']['clients']['name'] = node['fqdn']
+
 # Account for any number of clients, setup the client config on the director machine
 # Also push out whether to do custom client pools in chef-solo or chef-client mode
 bareos_clients.each do |client|
-  template "/etc/bareos/bareos-dir.d/clients/#{client['fqdn']}.conf" do
+  template "/etc/bareos/bareos-dir.d/clients/#{client['hostname']}.conf" do
     source 'client.conf.erb'
     owner 'bareos'
     group 'bareos'
     mode '0640'
     variables(
-      bareos_client: client
+      bareos_client: client,
+      name: client['bareos']['clients']['name']
     )
     notifies :run, 'execute[reload-dir]', :delayed
   end
