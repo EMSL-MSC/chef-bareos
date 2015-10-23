@@ -33,7 +33,7 @@ else
   bareos_dir = search(:node, 'roles:bareos_director')
 end
 
-node.default['bareos']['director']['name'] = bareos_dir['fqdn']
+node.default['bareos']['clients']['name'] = node['fqdn']
 
 # Setup the configs for any local/remote File Daemons clients
 template '/etc/bareos/bareos-fd.conf' do
@@ -43,7 +43,7 @@ template '/etc/bareos/bareos-fd.conf' do
   mode '0640'
   variables(
     bareos_dir: bareos_dir,
-    name: node['bareos']['director']['name']
+    name: node['bareos']['clients']['name']
   )
   notifies :run, 'execute[restart-fd]', :immediately
 end

@@ -76,6 +76,7 @@ else
 end
 
 node.default['bareos']['clients']['name'] = node['fqdn']
+node.default['bareos']['director']['name'] = node['fqdn']
 
 # Account for any number of clients, setup the client config on the director machine
 # Also push out whether to do custom client pools in chef-solo or chef-client mode
