@@ -53,6 +53,7 @@ default['bareos']['database']['dbpassword'] = ''
 default['bareos']['database']['dbaddress'] = nil
 
 # Clients
+default['bareos']['clients']['name'] = node['fqdn']
 default['bareos']['clients']['fd_port'] = 9102
 default['bareos']['clients']['max_concurrent_jobs'] = 20
 default['bareos']['clients']['client_list'] = %w(node) # {'foo.bar.org','boo.ya.org'}
@@ -116,6 +117,7 @@ default['bareos']['storage']['max_concurrent_jobs'] = 20
 default['bareos']['storage']['file_storage_path'] = '/var/lib/bareos/storage'
 
 # Director
+default['bareos']['director']['name'] = node['fqdn']
 default['bareos']['director']['dir_port'] = 9101
 default['bareos']['director']['dir_max_concurrent_jobs'] = 20
 default['bareos']['director']['custom_configs'] = true

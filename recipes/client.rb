@@ -33,8 +33,6 @@ else
   bareos_dir = search(:node, 'roles:bareos_director')
 end
 
-node.default['bareos']['clients']['name'] = node['fqdn']
-
 # Setup the configs for any local/remote File Daemons clients
 template '/etc/bareos/bareos-fd.conf' do
   source 'bareos-fd.conf.erb'

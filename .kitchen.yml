@@ -40,6 +40,9 @@ suites:
     run_list:
       - role[bareos_director]
     attributes:
+      bareos:
+        clients:
+          name: "imatestbox"
 
   - name: aio-server-pools
     run_list:
