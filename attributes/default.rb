@@ -74,6 +74,7 @@ default['bareos']['clients']['storage'] = node['bareos']['clients']['jobdef_defa
 default['bareos']['clients']['vfull_storage'] = node['bareos']['clients']['jobdef_default_storage']
 default['bareos']['clients']['fileset'] = node['bareos']['clients']['jobdef_default_fileset']
 default['bareos']['clients']['host_pools'] = false # Default is disabled, normal pools, see below
+default['bareos']['clients']['backup_dirs'] = ['/']
 
 case node['bareos']['clients']['host_pools']
 when false
@@ -102,6 +103,7 @@ default['bareos']['clients']['vfull_reschedule_interval'] = '30 minutes'
 default['bareos']['clients']['vfull_reschedule_times'] = 1
 
 # Storage Daemon
+default['bareos']['storage']['name'] = node['fqdn']
 default['bareos']['storage']['sd_port'] = 9103
 default['bareos']['storage']['tape'] = false # Tape may have to be handled via custom wrapper cookbooks
 case node['bareos']['storage']['tape']
@@ -130,4 +132,5 @@ default['bareos']['director']['dir_subscription'] = nil
 default['bareos']['director']['dir_subs'] = nil
 
 # Workstation
+default['bareos']['workstation']['name'] = node['fqdn']
 default['bareos']['workstation']['solo_mode'] = '0'

@@ -58,12 +58,14 @@ FileSet {
     Options {
       signature = MD5
     }
-    File = /
+    <% @bareos_client['bareos']['clients']['backup_dirs'].each do |dir| %>
+    File = <%= dir %>
+    <% end %>
     Exclude Dir Containing = .bareos_ignore
   }
   Exclude {
     File = /var/lib/bareos
-    File = /var/lib/bareos/storage
+    File = <%= node['bareos']['storage']['file_storage_path'] %> 
     File = /var/lib/pgsql
     File = /var/lib/mysql
     File = /proc

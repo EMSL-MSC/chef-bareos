@@ -27,19 +27,17 @@ end
 # Define the list of bareos directors
 if Chef::Config[:solo]
   bareos_dir = node['bareos']['director']['servers']
-  node.default['bareos']['workstation']['solo_mode'] = '1'
 else
   bareos_dir = search(:node, 'roles:bareos_director')
 end
 
-# Setup the bconsole config, pushes out list of bareos-dirs and if solo mode
+# Setup the bconsole config, pushes out bareos-dir list/hash
 template '/etc/bareos/bconsole.conf' do
   source 'bconsole.conf.erb'
   mode 0640
   owner 'bareos'
   group 'bareos'
   variables(
-    bareos_dir: bareos_dir,
-    solo_mode: node['bareos']['workstation']['solo_mode']
+    bareos_dir: bareos_dir
   )
 end
