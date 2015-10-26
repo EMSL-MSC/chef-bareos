@@ -117,6 +117,14 @@ default['bareos']['storage']['custom_configs'] = '0'
 default['bareos']['storage']['sd_mon_enable'] = 'yes'
 default['bareos']['storage']['max_concurrent_jobs'] = 20
 default['bareos']['storage']['file_storage_path'] = '/var/lib/bareos/storage'
+default['bareos']['storage']['default_max_volumes'] = 25
+default['bareos']['storage']['default_max_volume_bytes'] = '10G'
+default['bareos']['storage']['full_max_volumes'] = 25
+default['bareos']['storage']['full_max_volume_bytes'] = '10G'
+default['bareos']['storage']['incremental_max_volumes'] = 25
+default['bareos']['storage']['incremental_max_volume_bytes'] = '10G'
+default['bareos']['storage']['differential_max_volumes'] = 25
+default['bareos']['storage']['differential_max_volume_bytes'] = '10G'
 
 # Director
 default['bareos']['director']['name'] = node['fqdn']

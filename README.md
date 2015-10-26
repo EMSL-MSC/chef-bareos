@@ -70,6 +70,8 @@ Attribute        | Description | Type | Default
 ['bareos']['clients']['incremental_pool'] | | | 'Inc-Pool'
 ['bareos']['clients']['differential_pool'] | | | 'Diff-Pool'
 ['bareos']['clients']['enable_vfulls'] | | | false
+['bareos']['clients']['name'] | Sets the name of the client, overiding automatic detection | string | node['fqdn']
+['bareos']['clients']['backup_dirs'] | List of directories to backup on client | Array of Strings| ['/']
 
 ## Storage Daemon
 
@@ -81,6 +83,16 @@ Attribute        | Description | Type | Default
 ['bareos']['storage']['custom_configs'] | | | '0'
 ['bareos']['storage']['sd_mon_enable'] | | | 'yes'
 ['bareos']['storage']['max_concurrent_jobs'] | | | 20
+['bareos']['storage']['file_storage_path'] | Location to store backup files | string | '/var/lib/bareos/storage'
+['bareos']['storage']['default_max_volumes'] | Max number of volumes in Default Pool | | 25
+['bareos']['storage']['default_max_volume_bytes'] | Max number of volumes in Default Pool | string | '10G'
+['bareos']['storage']['full_max_volumes'] | Max number of volumes in Full-Pool | | 25
+['bareos']['storage']['full_max_volume_bytes'] | Max number of volumes in Full-Pool | string | '10G'
+['bareos']['storage']['incremental_max_volumes'] | Max number of volumes in Inc-Pool | | 25
+['bareos']['storage']['incremental_max_volume_bytes'] | Max number of volumes in Inc-Pool | string | '10G'
+['bareos']['storage']['differential_max_volumes'] | Max number of volumes in Diff-Pool | | 25
+['bareos']['storage']['differential_max_volume_bytes'] | Max number of volumes in Diff-Pool | string | '10G'
+
 
 ## Director
 

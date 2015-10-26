@@ -161,8 +161,8 @@ Pool {
   Recycle = yes
   AutoPrune = yes
   Volume Retention = 30 days
-  Maximum Volume Bytes = 10G
-  Maximum Volumes = 25
+  Maximum Volume Bytes = <%= node['bareos']['storage']['default_max_volume_bytes'] %>
+  Maximum Volumes = <%= node['bareos']['storage']['default_max_volumes'] %>
   LabelFormat = "DefaultVol-"
 }
 
@@ -172,8 +172,8 @@ Pool {
   Recycle = yes
   AutoPrune = yes
   Volume Retention = 6 months
-  Maximum Volume Bytes = 10G
-  Maximum Volumes = 25
+  Maximum Volume Bytes = <%= node['bareos']['storage']['full_max_volume_bytes'] %>
+  Maximum Volumes = <%= node['bareos']['storage']['full_max_volumes'] %>
   LabelFormat = "FullVol-"
 }
 
@@ -183,8 +183,8 @@ Pool {
   Recycle = yes
   AutoPrune = yes
   Volume Retention = 2 months
-  Maximum Volume Bytes = 10G
-  Maximum Volumes = 25
+  Maximum Volume Bytes = <%= node['bareos']['storage']['incremental_max_volume_bytes'] %>
+  Maximum Volumes = <%= node['bareos']['storage']['incremental_max_volumes'] %>
   LabelFormat = "IncVol-"
 }
 
@@ -194,10 +194,11 @@ Pool {
   Recycle = yes
   AutoPrune = yes
   Volume Retention = 4 months
-  Maximum Volume Bytes = 10G
-  Maximum Volumes = 25
+  Maximum Volume Bytes = <%= node['bareos']['storage']['differential_max_volume_bytes'] %>
+  Maximum Volumes = <%= node['bareos']['storage']['differential_max_volumes'] %>
   LabelFormat = "DiffVol-"
 }
+
 
 Pool {
   Name = Scratch
