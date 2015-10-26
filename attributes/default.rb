@@ -23,7 +23,7 @@ when 'debian'
   end
 when 'rhel'
   case node['platform']
-  when 'centos'
+  when 'centos','scientific'
     default['bareos']['baseurl'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/CentOS_#{node['platform_version'].to_i}/"
     default['bareos']['gpgkey'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/CentOS_#{node['platform_version'].to_i}/repodata/repomd.xml.key"
   when 'redhat'
