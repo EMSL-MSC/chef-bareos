@@ -93,9 +93,9 @@ end
 
 # Allow a restart of the director daemon if called with tests up front
 execute 'reload-dir' do
-  command 'su - bareos -s /bin/sh -c "/usr/sbin/bareos-dir -t -c /etc/bareos/bareos-dir.conf"'
+  command 'su - bareos -s /bin/sh -c "/usr/sbin/bareos-dir -t -c /etc/bareos/bareos-dir.conf" && echo reload | bconsole'
   action :nothing
-  notifies :restart, 'service[bareos-dir]', :delayed
+#  notifies :restart, 'service[bareos-dir]', :delayed
 end
 
 # Enable and start the bareos-dir service

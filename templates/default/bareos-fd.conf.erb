@@ -9,6 +9,7 @@ FileDaemon {
   FDPort = <%= node['bareos']['clients']['fd_port'] %>
   Maximum Concurrent Jobs = <%= node['bareos']['clients']['max_concurrent_jobs'] %>
   Heartbeat Interval = <%= node['bareos']['clients']['heartbeat_interval'] %>
+  Plugin Directory = /usr/lib64/bareos/plugins
 }
 
 <% @bareos_dir.each do |director| %>
