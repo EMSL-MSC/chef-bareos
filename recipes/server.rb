@@ -95,7 +95,7 @@ end
 execute 'reload-dir' do
   command 'su - bareos -s /bin/sh -c "/usr/sbin/bareos-dir -t -c /etc/bareos/bareos-dir.conf" && echo reload | bconsole'
   action :nothing
-#  notifies :restart, 'service[bareos-dir]', :delayed
+  #  notifies :restart, 'service[bareos-dir]', :delayed
 end
 
 # Enable and start the bareos-dir service
