@@ -1,12 +1,11 @@
 {
-  "name": "bareos_director",
-  "description": "Bareos Director Role",
-  "json_class": "Chef::Role",
-  "default_attributes": {
-  },
-  "override_attributes": {
-  },
   "chef_type": "role",
+  "default_attributes": {},
+  "description": "Bareos Director Role",
+  "env_run_lists": {},
+  "json_class": "Chef::Role",
+  "name": "bareos_director",
+  "override_attributes": {},
   "run_list": [
     "role[bareos_client]",
     "recipe[chef-bareos::database]",
@@ -14,7 +13,5 @@
     "recipe[chef-bareos::server]",
     "recipe[chef-bareos::workstation]",
     "recipe[chef-bareos::graphite_plugin]"
-  ],
-  "env_run_lists": {
-  }
+  ]
 }
