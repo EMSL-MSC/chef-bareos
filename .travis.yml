@@ -8,11 +8,19 @@ addons:
       - chef-stable-trusty
     packages:
       - chefdk
+
+install: echo "skip bundle install"
+
 stages:
   - lint
   - test
 
-install: echo "skip bundle install"
+env:
+  - T=bareos-aio-server-ubuntu-16
+  - T=bareos-aio-server-centos-7
+
+script:
+  - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml /opt/chefdk/embedded/bin/kitchen test $T -d always
 
 before_script:
   - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
@@ -21,6 +29,7 @@ before_script:
   - /opt/chefdk/embedded/bin/cookstyle --version
   - /opt/chefdk/embedded/bin/foodcritic --version
   - /opt/chefdk/embedded/bin/rspec --version
+  - /opt/chefdk/embedded/bin/chef gem install kitchen-dokken
 
 jobs:
   include:
@@ -28,13 +37,6 @@ jobs:
       env:
       script:
         - /bin/bash -xe travis/pre-commit.sh
-    - stage: test
-      env:
-        - T=bareos-aio-server-ubuntu-16
-        - T=bareos-aio-server-centos-7
-      script:
-        - /opt/chefdk/embedded/bin/chef gem install kitchen-dokken
-        - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml /opt/chefdk/embedded/bin/kitchen test $T -d always
 
 notifications:
   email:
