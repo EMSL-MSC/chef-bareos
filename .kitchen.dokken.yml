@@ -1,0 +1,57 @@
+---
+driver:
+  name: dokken
+
+transport:
+  name: dokken
+
+provisioner:
+  name: dokken
+
+platforms:
+  - name: ubuntu-16
+    driver:
+      image: dokken/ubuntu-16.04
+      privileged: true
+      pid_one_command: /lib/systemd/systemd
+      volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro # required by systemd
+    run_list:
+      - recipe[apt]
+    attributes:
+      apt:
+        compile_time_update: true
+  - name: centos-7
+    driver:
+      image: dokken/centos-7
+      privileged: true
+      pid_one_command: /usr/lib/systemd/systemd
+      volumes:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro # required by systemd
+
+verifier:
+  name: inspec
+
+suites:
+  - name: bareos-aio-server
+    run_list:
+      - role[bareos_director]
+    attributes:
+      bareos:
+        test_mode: true
+        client:
+          sensitive_configs: false
+        storage:
+          sensitive_configs: false
+          autochanger_enabled: true
+        director:
+          sensitive_configs: false
+          conf:
+            help:
+              test: '# Some String'
+        workstation:
+          sensitive_configs: false
+        plugins:
+          graphite:
+            cron_job: true
+            sensitive_configs: false
