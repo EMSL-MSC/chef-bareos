@@ -1,7 +1,7 @@
 name              'chef-bareos'
 maintainer        'dsi'
 maintainer_email  'leonard.tavae@informatique.gov.pf'
-license           'Apache 2.0'
+license           'Apache-2.0'
 description       'Installs/Configures BAREOS - Backup Archiving REcovery Open Sourced'
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 issues_url        'https://github.com/sitle/chef-bareos/issues'
