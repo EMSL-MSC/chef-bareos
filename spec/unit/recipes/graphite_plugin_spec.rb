@@ -13,7 +13,7 @@ describe 'chef-bareos::graphite_plugin' do
   supported_platforms.each do |platform, versions|
     versions.each do |version|
       context "on an #{platform.capitalize}-#{version} box" do
-        let(:chef_run) do
+        cached(:chef_run) do
           runner = ChefSpec::ServerRunner.new(platform: platform, version: version)
           runner.node.default['bareos']['plugins']['graphite']['config_path'] = '/etc/bareos'
           runner.node.default['bareos']['plugins']['graphite']['plugin_path'] = '/usr/sbin'
