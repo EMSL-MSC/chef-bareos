@@ -7,6 +7,7 @@ transport:
 
 provisioner:
   name: dokken
+  multiple_converge: 2
 
 platforms:
   - name: ubuntu-16
