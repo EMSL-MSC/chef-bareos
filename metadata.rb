@@ -14,6 +14,6 @@ depends           'openssl', '>= 4.0'
 depends           'postgresql', '< 7.0'
 
 supports          'debian', '>= 7.8'
-supports          'ubuntu', '= 14.04'
+supports          'ubuntu', '>= 14.04' # No binaries for bareos 15 on ubuntu 16
 supports          'redhat', '>= 6.0'
 supports          'centos', '>= 6.0'
