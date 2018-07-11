@@ -37,7 +37,7 @@ jobs:
 notifications:
   email:
     recipients:
-      - leonard.tavae@gmail.com
+      # - leonard.tavae@gmail.com
       - gitbytes@gmail.com
     on_failure: never
-    on_success: never
+    on_success: always
