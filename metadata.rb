@@ -12,6 +12,7 @@ depends 'apt', '>= 2.0'
 depends 'openssl', '>= 4.0'
 depends 'postgresql', '~> 4.0'
 depends 'yum-epel', '>= 0.6'
+chef_version      '>= 12.19'
 
 supports 'debian', '>= 7.8'
 supports 'ubuntu', '>= 12.04'
