@@ -10,9 +10,9 @@ provisioner:
   multiple_converge: 2
 
 platforms:
-  - name: ubuntu-16
+  - name: ubuntu-14
     driver:
-      image: dokken/ubuntu-16.04
+      image: dokken/ubuntu-14.04
       privileged: true
       pid_one_command: /lib/systemd/systemd
       volumes:

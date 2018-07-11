@@ -16,7 +16,7 @@ stages:
   - test
 
 env:
-  - T=bareos-aio-server-ubuntu-16
+  - T=bareos-aio-server-ubuntu-14
   - T=bareos-aio-server-centos-7
 
 script:
