@@ -1,22 +1,43 @@
-language: ruby
-rvm:
-  - 2.2.5
-  - 2.3.1
+dist: trusty
+sudo: required
+group: edge
+services: docker
+addons:
+  apt:
+    sources:
+      - chef-stable-trusty
+    packages:
+      - chefdk
+stages:
+  - lint
+  - test
 
-script:
-  - bundle exec rspec --default-path spec
-  - bundle exec foodcritic -f any .
-  - bundle exec rubocop
+install: echo "skip bundle install"
+
+jobs:
+  include:
+    - stage: lint
+      env:
+      script:
+        - /opt/chefdk/embedded/bin/chef --version
+        - /opt/chefdk/embedded/bin/cookstyle --version
+        - /opt/chefdk/embedded/bin/foodcritic --version
+        - /opt/chefdk/embedded/bin/rspec --version
+        - /bin/bash -xe travis/pre-commit.sh
+    - stage: test
+      before_script:
+        - eval "$(/opt/chefdk/bin/chef shell-init bash)"
+      env:
+        - T=bareos-aio-server-ubuntu-16
+        - T=bareos-aio-server-centos-7
+      script:
+        - /opt/chefdk/embedded/bin/chef gem install kitchen-dokken
+        - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml /opt/chefdk/embedded/bin/kitchen test $T -d always
 
 notifications:
   email:
     recipients:
       - leonard.tavae@gmail.com
-      - sysadmin@informatique.gov.pf
-      - ian.smith@pnnl.gov
-    on_success: always
-  webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/8b3467fd343caf088255
-    on_success: always
-    on_failure: always
+      - gitbytes@gmail.com
+    on_failure: never
+    on_success: never
