@@ -16,7 +16,7 @@ provisioner:
   name: chef_zero
   product_name: chef
   install_strategy: always
-  product_version: "13.8.5"
+  product_version: latest
   multiple_converge: 2
 
 verifier:
