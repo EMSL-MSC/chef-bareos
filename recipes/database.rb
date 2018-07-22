@@ -28,9 +28,38 @@ package "bareos-database-#{database}"
 # Determine DB resources to install (psql/mysql)
 case database
 when 'postgresql'
-  include_recipe 'postgresql::server'
+  postgresql_repository 'bareos' do
+    version '9.4'
+  end
+
+  postgresql_server_install 'package' do
+    version '9.4'
+    action [:install, :create]
+  end
+
+  find_resource(:service, 'postgresql') do
+    extend PostgresqlCookbook::Helpers
+    service_name lazy { platform_service_name }
+    supports restart: true, status: true, reload: true
+    action [:enable, :start]
+  end
+
+  execute 'create_database' do
+    command 'su postgres -c /usr/lib/bareos/scripts/create_bareos_database && touch /usr/lib/bareos/.dbcreated'
+    creates '/usr/lib/bareos/.dbcreated'
+  end
+
+  execute 'create_tables' do
+    command 'su postgres -s /bin/bash -c /usr/lib/bareos/scripts/make_bareos_tables && touch /usr/lib/bareos/.dbtablescreated'
+    creates '/usr/lib/bareos/.dbtablescreated'
+  end
+
+  execute 'grant_privileges' do
+    command 'su postgres -s /bin/bash -c /usr/lib/bareos/scripts/grant_bareos_privileges && touch /usr/lib/bareos/.dbprivgranted'
+    creates '/usr/lib/bareos/.dbprivgranted'
+  end
 else
-  if platform_family?('rhel')
+  if rhel?
     database_client_name = database.to_s
     database_server_name = "#{database}-server"
   else
@@ -39,24 +68,4 @@ else
   end
   package database_client_name.to_s
   package database_server_name.to_s
-end
-
-# Need to add some mysql logic here to do the database setup for bareos, psql only right now, mysql is manual
-case database
-when 'postgresql'
-  execute 'create_database' do
-    command 'su postgres -c /usr/lib/bareos/scripts/create_bareos_database && touch /usr/lib/bareos/.dbcreated'
-    creates '/usr/lib/bareos/.dbcreated'
-    action :run
-  end
-  execute 'create_tables' do
-    command 'su postgres -s /bin/bash -c /usr/lib/bareos/scripts/make_bareos_tables && touch /usr/lib/bareos/.dbtablescreated'
-    creates '/usr/lib/bareos/.dbtablescreated'
-    action :run
-  end
-  execute 'grant_privileges' do
-    command 'su postgres -s /bin/bash -c /usr/lib/bareos/scripts/grant_bareos_privileges && touch /usr/lib/bareos/.dbprivgranted'
-    creates '/usr/lib/bareos/.dbprivgranted'
-    action :run
-  end
 end
