@@ -17,7 +17,6 @@ provisioner:
   product_name: chef
   install_strategy: always
   product_version: latest
-  multiple_converge: 2
 
 verifier:
   name: inspec
