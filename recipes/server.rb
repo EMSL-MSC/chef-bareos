@@ -21,16 +21,15 @@
 # This is just so Bareos has SOMETHING to backup (i.e. Catalog)
 include_recipe 'chef-bareos::client'
 
-# Preparing Random Password for the director and mon, including OpenSSL library from client.rb
+# Include the OpenSSL library for generating random passwords
+::Chef::Recipe.send(:include, OpenSSLCookbook::RandomPassword)
 node.normal_unless['bareos']['dir_password'] = random_password(length: 30, mode: :base64)
 node.normal_unless['bareos']['mon_password'] = random_password(length: 30, mode: :base64)
 
+node.save # FC075: Cookbook uses node.save to save partial node data to the chef-server mid-run
+
 # Install BAREOS Server Packages
-%w(bareos-director bareos-tools).each do |server_pkgs|
-  package server_pkgs do
-    action :install
-  end
-end
+package %w(bareos-director bareos-tools)
 
 # Create the custom config directory and placeholder file
 directory '/etc/bareos/bareos-dir.d' do
@@ -67,17 +66,15 @@ template '/etc/bareos/bareos-dir.conf' do
     dir_name: node['bareos']['director']['name']
   )
   sensitive node['bareos']['director']['sensitive_configs']
-  only_if { File.exist?('/etc/bareos/bareos-dir.d/dir_helper.conf') }
+  only_if { ::File.exist?('/etc/bareos/bareos-dir.d/dir_helper.conf') }
 end
 
 # Create clients config based on sets of hashes, see attributes file for default example(s)
 client_search_query = node['bareos']['clients']['client_search_query']
-
-bareos_clients = if Chef::Config[:solo]
-                   node['bareos']['clients']['client_list']
-                 else
-                   search(:node, client_search_query)
-                 end
+client_search_result = search(:node, client_search_query)
+if client_search_result.empty?
+  client_search_result = search(:node, "fqdn:#{node['fqdn']}")
+end
 
 template '/etc/bareos/bareos-dir.d/clients.conf' do
   source 'clients.conf.erb'
@@ -86,7 +83,7 @@ template '/etc/bareos/bareos-dir.d/clients.conf' do
   mode '0640'
   variables(
     unmanaged_clients: node['bareos']['clients']['unmanaged'],
-    bareos_clients: bareos_clients,
+    bareos_clients: client_search_result,
     client_conf: node['bareos']['clients']['conf']
   )
   sensitive node['bareos']['director']['sensitive_configs']
