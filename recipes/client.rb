@@ -22,18 +22,19 @@
 node.normal_unless['bareos']['fd_password'] = random_password(length: 30, mode: :base64)
 node.normal_unless['bareos']['mon_password'] = random_password(length: 30, mode: :base64)
 
-# Installation of the BAREOS File Daemon
+node.save # FC075: Cookbook uses node.save to save partial node data to the chef-server mid-run
+
 include_recipe 'chef-bareos::repo'
+
+# Installation of the BAREOS File Daemon
 package 'bareos-filedaemon'
 
 # Determine the list of BAREOS directors
-dir_search_query = node.default['bareos']['director']['dir_search_query']
+dir_search_query = node['bareos']['director']['dir_search_query']
 dir_search_result = search(:node, dir_search_query)
-dir_search_filtered = if !dir_search_result.empty?
-                        dir_search_result
-                      else
-                        'not-a-real-director'
-                      end
+if dir_search_result.empty?
+  dir_search_result = search(:node, "fqdn:#{node['fqdn']}")
+end
 
 # Setup the configs for any local/remote File Daemons clients
 template '/etc/bareos/bareos-fd.conf' do
@@ -42,9 +43,8 @@ template '/etc/bareos/bareos-fd.conf' do
   group 'bareos'
   mode '0640'
   variables(
-    bareos_dir: dir_search_filtered
+    bareos_dir: dir_search_result
   )
-  only_if { dir_search_filtered != 'not-a-real-director' }
   sensitive node['bareos']['clients']['sensitive_configs']
 end
 
