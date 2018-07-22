@@ -17,9 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Add repos for supported OS platforms, otherwise return fatal notice
-case node['platform_family']
-when 'rhel', 'fedora'
+if rhel?
   yum_repository node['bareos']['repository_name'] do
     description node['bareos']['description']
     baseurl node['bareos']['baseurl']
@@ -32,7 +30,7 @@ when 'rhel', 'fedora'
     gpgkey node['bareos']['contrib_gpgkey']
     action :create
   end
-when 'debian'
+elsif debian?
   apt_repository 'bareos' do
     uri node['bareos']['baseurl']
     components ['/']
@@ -47,6 +45,4 @@ when 'debian'
     key node['bareos']['contrib_gpgkey']
     action :add
   end
-else
-  Chef::Log.fatal('OS is not currently supported by this cookbook, submit enhancement request or PR')
 end
