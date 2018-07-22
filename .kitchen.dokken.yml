@@ -25,7 +25,7 @@ platforms:
       volumes:
         - /sys/fs/cgroup:/sys/fs/cgroup:ro # required by systemd
       intermediate_instructions:
-        - RUN yum -y install lsof which systemd-sysv initscripts vixie-cron
+        - RUN yum -y install lsof which systemd-sysv initscripts cronie
 
 verifier:
   name: inspec
