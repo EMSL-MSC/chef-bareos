@@ -1,58 +1,36 @@
 # Repository
+default['bareos']['version'] = '15.2'
 default['bareos']['url'] = 'http://download.bareos.org/bareos/release'
 default['bareos']['contrib_url'] = 'http://download.bareos.org/bareos/contrib'
 
-default['bareos']['version'] = '15.2' # <--- Latest Stable version as of 06-Dec-2015
-
-if platform_family?('rhel', 'fedora')
+if platform_family?('rhel')
   default['bareos']['repository_name'] = 'bareos'
-  default['bareos']['description'] = "Backup Archiving REcovery Open Sourced Current #{node['bareos']['version']}"
+  default['bareos']['description'] = "Bareos #{node['bareos']['version']}"
   default['bareos']['contrib_repository_name'] = 'bareos_contrib'
   default['bareos']['contrib_description'] = "Backup Archiving REcovery Open Sourced Current #{node['bareos']['version']} contrib"
 end
 
-case node['platform_family']
+case node['platform']
 when 'debian'
-  case node['platform']
-  when 'debian'
-    default['bareos']['baseurl'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/Debian_#{node['platform_version'].to_i}.0/"
-    default['bareos']['gpgkey'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/Debian_#{node['platform_version'].to_i}.0/Release.key"
-    default['bareos']['contrib_baseurl'] = "#{node['bareos']['contrib_url']}/Debian_#{node['platform_version'].to_i}.0/"
-    default['bareos']['contrib_gpgkey'] = "#{node['bareos']['contrib_url']}/Debian_#{node['platform_version'].to_i}.0/Release.key"
-  when 'ubuntu'
-    default['bareos']['baseurl'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/xUbuntu_#{node['platform_version']}/"
-    default['bareos']['gpgkey'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/xUbuntu_#{node['platform_version']}/Release.key"
-    default['bareos']['contrib_baseurl'] = "#{node['bareos']['contrib_url']}/xUbuntu_#{node['platform_version']}/"
-    default['bareos']['contrib_gpgkey'] = "#{node['bareos']['contrib_url']}/xUbuntu_#{node['platform_version']}/Release.key"
-  end
-when 'rhel'
-  case node['platform']
-  when 'centos'
-    default['bareos']['baseurl'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/CentOS_#{node['platform_version'].to_i}/"
-    default['bareos']['gpgkey'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/CentOS_#{node['platform_version'].to_i}/repodata/repomd.xml.key"
-    default['bareos']['contrib_baseurl'] = "#{node['bareos']['contrib_url']}/CentOS_#{node['platform_version'].to_i}/"
-    default['bareos']['contrib_gpgkey'] = "#{node['bareos']['contrib_url']}/CentOS_#{node['platform_version'].to_i}/repodata/repomd.xml.key"
-  when 'scientific'
-    default['bareos']['baseurl'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/CentOS_#{node['platform_version'].to_i}/"
-    default['bareos']['gpgkey'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/CentOS_#{node['platform_version'].to_i}/repodata/repomd.xml.key"
-    default['bareos']['contrib_baseurl'] = "#{node['bareos']['contrib_url']}/CentOS_#{node['platform_version'].to_i}/"
-    default['bareos']['contrib_gpgkey'] = "#{node['bareos']['contrib_url']}/CentOS_#{node['platform_version'].to_i}/repodata/repomd.xml.key"
-  when 'redhat'
-    default['bareos']['baseurl'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/#{node['platform_family'].upcase}_#{node['platform_version'].to_i}/"
-    default['bareos']['gpgkey'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/#{node['platform_family'].upcase}_#{node['platform_version'].to_i}/repodata/repomd.xml.key"
-    default['bareos']['contrib_baseurl'] = "#{node['bareos']['contrib_url']}/#{node['platform_family'].upcase}_#{node['platform_version'].to_i}/"
-    default['bareos']['contrib_gpgkey'] = "#{node['bareos']['contrib_url']}/#{node['platform_family'].upcase}_#{node['platform_version'].to_i}/repodata/repomd.xml.key"
-  end
-when 'fedora'
-  default['bareos']['baseurl'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/#{node['platform'].capitalize}_#{node['platform_version']}/"
-  default['bareos']['gpgkey'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/#{node['platform'].capitalize}_#{node['platform_version']}/repodata/repomd.xml.key"
-  default['bareos']['contrib_baseurl'] = "#{node['bareos']['contrib_url']}/#{node['platform'].capitalize}_#{node['platform_version']}/"
-  default['bareos']['contrib_gpgkey'] = "#{node['bareos']['contrib_url']}/#{node['platform'].capitalize}_#{node['platform_version']}/repodata/repomd.xml.key"
-else
-  default['bareos']['baseurl'] = nil
-  default['bareos']['gpgkey'] = nil
-  default['bareos']['contrib_baseurl'] = nil
-  default['bareos']['contrib_gpgkey'] = nil
+  default['bareos']['baseurl'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/Debian_#{node['platform_version'].to_i}.0/"
+  default['bareos']['gpgkey'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/Debian_#{node['platform_version'].to_i}.0/Release.key"
+  default['bareos']['contrib_baseurl'] = "#{node['bareos']['contrib_url']}/Debian_#{node['platform_version'].to_i}.0/"
+  default['bareos']['contrib_gpgkey'] = "#{node['bareos']['contrib_url']}/Debian_#{node['platform_version'].to_i}.0/Release.key"
+when 'ubuntu'
+  default['bareos']['baseurl'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/xUbuntu_#{node['platform_version']}/"
+  default['bareos']['gpgkey'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/xUbuntu_#{node['platform_version']}/Release.key"
+  default['bareos']['contrib_baseurl'] = "#{node['bareos']['contrib_url']}/xUbuntu_#{node['platform_version']}/"
+  default['bareos']['contrib_gpgkey'] = "#{node['bareos']['contrib_url']}/xUbuntu_#{node['platform_version']}/Release.key"
+when 'centos'
+  default['bareos']['baseurl'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/CentOS_#{node['platform_version'].to_i}/"
+  default['bareos']['gpgkey'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/CentOS_#{node['platform_version'].to_i}/repodata/repomd.xml.key"
+  default['bareos']['contrib_baseurl'] = "#{node['bareos']['contrib_url']}/CentOS_#{node['platform_version'].to_i}/"
+  default['bareos']['contrib_gpgkey'] = "#{node['bareos']['contrib_url']}/CentOS_#{node['platform_version'].to_i}/repodata/repomd.xml.key"
+when 'redhat'
+  default['bareos']['baseurl'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/#{node['platform_family'].upcase}_#{node['platform_version'].to_i}/"
+  default['bareos']['gpgkey'] = "#{node['bareos']['url']}/#{node['bareos']['version']}/#{node['platform_family'].upcase}_#{node['platform_version'].to_i}/repodata/repomd.xml.key"
+  default['bareos']['contrib_baseurl'] = "#{node['bareos']['contrib_url']}/#{node['platform_family'].upcase}_#{node['platform_version'].to_i}/"
+  default['bareos']['contrib_gpgkey'] = "#{node['bareos']['contrib_url']}/#{node['platform_family'].upcase}_#{node['platform_version'].to_i}/repodata/repomd.xml.key"
 end
 
 # Messages
@@ -117,16 +95,18 @@ default['bareos']['workstation']['name'] = node['fqdn']
 default['bareos']['workstation']['sensitive_configs'] = true
 
 # Graphite Plugin Default Attributes
-default['bareos']['plugins']['graphite']['plugin_path'] = '/usr/sbin'
-default['bareos']['plugins']['graphite']['config_path'] = '/etc/bareos'
+default['bareos']['plugins']['graphite']['git_path'] = '/opt/bareos_contrib'
+default['bareos']['plugins']['graphite']['plugin_path'] = '/opt/bareos_contrib/misc/performance/graphite'
+default['bareos']['plugins']['graphite']['config_path'] = '/opt/bareos_contrib/misc/performance/graphite'
 default['bareos']['plugins']['graphite']['search_query'] = 'roles:bareos_director'
 default['bareos']['plugins']['graphite']['server'] = 'graphite'
 default['bareos']['plugins']['graphite']['graphite_port'] = '2003'
 default['bareos']['plugins']['graphite']['graphite_data_prefix'] = 'bareos.'
-default['bareos']['plugins']['graphite']['graphite_plugin_src_url'] = 'https://raw.githubusercontent.com/bareos/bareos-contrib/master/misc/performance/graphite/bareos-graphite-poller.py'
 default['bareos']['plugins']['graphite']['mail_to'] = ''
 default['bareos']['plugins']['graphite']['sensitive_configs'] = true
-default['bareos']['plugins']['graphite']['cron_command'] = "#{node['bareos']['plugins']['graphite']['plugin_path']}/bareos-graphite-poller.py -c #{node['bareos']['plugins']['graphite']['config_path']}/graphite-poller.conf >/dev/null 2>&1"
+default['bareos']['plugins']['graphite']['cron_command'] = "source /opt/bareos_graphite_venv/bin/activate && \
+  #{node['bareos']['plugins']['graphite']['plugin_path']}/bareos-graphite-poller.py -c \
+  #{node['bareos']['plugins']['graphite']['config_path']}/graphite-poller.conf >/dev/null 2>&1"
 
 ##############################
 # Examples -  Default Hashes #
