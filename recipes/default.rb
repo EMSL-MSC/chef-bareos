@@ -17,6 +17,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Include both the repo and client recipes for most cases
-include_recipe 'chef-bareos::repo'
 include_recipe 'chef-bareos::client'
