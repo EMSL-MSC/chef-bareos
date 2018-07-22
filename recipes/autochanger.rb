@@ -19,7 +19,6 @@
 
 include_recipe 'chef-bareos::storage'
 
-# Experimental Tape Autochanger Support
 package 'bareos-storage-tape'
 
 execute 'mtx-changer' do
@@ -37,7 +36,7 @@ template '/etc/bareos/bareos-sd.d/device-tape-with-autoloader.conf' do
     autochangers: node['bareos']['storage']['autochangers'],
     devices: node['bareos']['storage']['devices']
   )
-  only_if { File.exist?('/etc/bareos/mtx-changer.conf') }
+  only_if { ::File.exist?('/etc/bareos/mtx-changer.conf') }
   notifies :restart, 'service[bareos-sd]', :delayed
   action :create
 end

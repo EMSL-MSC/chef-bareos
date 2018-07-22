@@ -21,19 +21,20 @@
 ::Chef::Recipe.send(:include, OpenSSLCookbook::RandomPassword)
 node.normal_unless['bareos']['fd_password'] = random_password(length: 30, mode: :base64)
 node.normal_unless['bareos']['mon_password'] = random_password(length: 30, mode: :base64)
-node.save unless Chef::Config[:solo]
+
+node.save # FC075: Cookbook uses node.save to save partial node data to the chef-server mid-run
+
+include_recipe 'chef-bareos::repo'
 
 # Installation of the BAREOS File Daemon
-include_recipe 'chef-bareos::repo'
 package 'bareos-filedaemon'
 
 # Determine the list of BAREOS directors
-dir_search_query = node.default['bareos']['director']['dir_search_query']
-bareos_dir = if Chef::Config[:solo]
-               node['bareos']['director']['servers']
-             else
-               search(:node, dir_search_query)
-             end
+dir_search_query = node['bareos']['director']['dir_search_query']
+dir_search_result = search(:node, dir_search_query)
+if dir_search_result.empty?
+  dir_search_result = search(:node, "fqdn:#{node['fqdn']}")
+end
 
 # Setup the configs for any local/remote File Daemons clients
 template '/etc/bareos/bareos-fd.conf' do
@@ -42,7 +43,7 @@ template '/etc/bareos/bareos-fd.conf' do
   group 'bareos'
   mode '0640'
   variables(
-    bareos_dir: bareos_dir
+    bareos_dir: dir_search_result
   )
   sensitive node['bareos']['clients']['sensitive_configs']
 end
@@ -51,7 +52,7 @@ end
 execute 'restart-fd' do
   command 'bareos-fd -t -c /etc/bareos/bareos-fd.conf'
   action :nothing
-  subscribes :run, 'template[/etc/bareos/bareos-fd.conf]', :immediately
+  subscribes :run, 'template[/etc/bareos/bareos-fd.conf]', :delayed
   notifies :restart, 'service[bareos-fd]', :delayed
 end
 

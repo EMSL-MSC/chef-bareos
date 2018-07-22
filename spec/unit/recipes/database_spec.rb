@@ -9,12 +9,12 @@ require 'spec_helper'
 describe 'chef-bareos::database' do
   before do
     allow_any_instance_of(Chef::Recipe).to receive(:include_recipe).and_call_original
-    stub_command(/ls \/.*\/recovery.conf/).and_return(false)
+    stub_command(%r{ls \/.*\/recovery.conf}).and_return(false)
   end
   supported_platforms.each do |platform, versions|
     versions.each do |version|
       context "on an #{platform.capitalize}-#{version} box" do
-        let(:chef_run) do
+        cached(:chef_run) do
           runner = ChefSpec::ServerRunner.new(platform: platform, version: version)
           runner.converge(described_recipe)
         end

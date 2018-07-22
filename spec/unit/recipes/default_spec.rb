@@ -9,11 +9,29 @@ require 'spec_helper'
 describe 'chef-bareos::default' do
   before do
     allow_any_instance_of(Chef::Recipe).to receive(:include_recipe).and_call_original
+    allow_any_instance_of(Chef::Recipe).to receive(:search).and_call_original
+    allow_any_instance_of(Chef::Recipe)
+      .to receive(:search).with(
+        :node,
+        'roles:bareos_director'
+      ).and_return([{
+                     'bareos' => {
+                       'director' => {
+                         'name' => 'test',
+                       },
+                       'mon_password' => 'testpass',
+                       'sd_mon_enable' => 'yes',
+                       'messages' => {
+                         'default_messages' => 'Standard',
+                         'default_admin_messages' => 'all, !skipped, !restored',
+                       },
+                     },
+                   }])
   end
   supported_platforms.each do |platform, versions|
     versions.each do |version|
       context "on an #{platform.capitalize}-#{version} box" do
-        let(:chef_run) do
+        cached(:chef_run) do
           runner = ChefSpec::ServerRunner.new(platform: platform, version: version)
           runner.converge(described_recipe)
         end

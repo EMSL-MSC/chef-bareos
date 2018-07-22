@@ -1,15 +1,12 @@
 {
-  "name": "bareos_client",
-  "description": "simple client role for a bareos box test",
-  "json_class": "Chef::Role",
-  "default_attributes": {
-  },
-  "override_attributes": {
-  },
   "chef_type": "role",
+  "default_attributes": {},
+  "description": "simple client role for a bareos box test",
+  "env_run_lists": {},
+  "json_class": "Chef::Role",
+  "name": "bareos_client",
+  "override_attributes": {},
   "run_list": [
     "recipe[chef-bareos]"
-  ],
-  "env_run_lists": {
-  }
+  ]
 }

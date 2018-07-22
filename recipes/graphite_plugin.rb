@@ -17,32 +17,36 @@
 
 include_recipe 'chef-bareos::repo'
 
-if platform_family?('rhel') && node['platform_version'].to_i == 6
-  package ['python', 'python-bareos', 'python-requests', 'python-fedora-django']
-else
-  package ['python', 'python-bareos', 'python-requests', 'python-django']
+poise_git node['bareos']['plugins']['graphite']['git_path'] do
+  repository 'https://github.com/bareos/bareos-contrib.git'
 end
 
-directory node['bareos']['plugins']['graphite']['config_path']
+python_runtime 'bareos_graphite_python2' do
+  version '2'
+end
 
-template "#{node['bareos']['plugins']['graphite']['config_path']}/graphite-poller.conf" do
+package %w(python-bareos)
+
+python_virtualenv 'bareos_graphite_virtualenv' do
+  path '/opt/bareos_graphite_venv'
+end
+
+python_package 'bareos_graphite_requirements' do
+  package_name %w(django requests)
+  python 'bareos_graphite_python2'
+  virtualenv 'bareos_graphite_virtualenv'
+end
+
+template 'bareos_graphite_poller_conf' do
+  path "#{node['bareos']['plugins']['graphite']['git_path']}/misc/performance/graphite/graphite-poller.conf"
+  source 'graphite-poller.conf.erb'
   owner 'bareos'
   group 'bareos'
   mode '0740'
   sensitive node['bareos']['plugins']['graphite']['sensitive_configs']
 end
 
-remote_file "#{node['bareos']['plugins']['graphite']['plugin_path']}/bareos-graphite-poller.py" do
-  source node['bareos']['plugins']['graphite']['graphite_plugin_src_url']
-  owner 'bareos'
-  group 'bareos'
-  mode '0740'
-  use_last_modified true
-  use_conditional_get true
-  sensitive node['bareos']['plugins']['graphite']['sensitive_configs']
-end
-
-cron 'bareos_graphite_poller' do
+cron 'bareos_graphite_poller_cron' do
   command node['bareos']['plugins']['graphite']['cron_command']
   mailto node['bareos']['plugins']['graphite']['mail_to']
   only_if { node['bareos']['plugins']['graphite']['cron_job'] }

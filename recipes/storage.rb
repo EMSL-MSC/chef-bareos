@@ -21,23 +21,24 @@
 # Setup Storage Daemon Random Passwords
 ::Chef::Recipe.send(:include, OpenSSLCookbook::RandomPassword)
 node.normal_unless['bareos']['sd_password'] = random_password(length: 30, mode: :base64)
-node.save unless Chef::Config[:solo]
+
+node.save # FC075: Cookbook uses node.save to save partial node data to the chef-server mid-run
 
 # Install BAREOS Storage Daemon Packages
 include_recipe 'chef-bareos::repo'
-package 'bareos-storage' do
-  action :install
-end
+package 'bareos-storage'
 
 # Find Storage Daemon(s) and Director(s)
 storage_search_query = node['bareos']['storage']['storage_search_query']
+storage_search_result = search(:node, storage_search_query)
+if storage_search_result.empty?
+  storage_search_result = search(:node, "fqdn:#{node['fqdn']}")
+end
+
 dir_search_query = node['bareos']['director']['dir_search_query']
-if Chef::Config.solo
-  bareos_sd = node['bareos']['storage']['servers']
-  bareos_dir = node['bareos']['director']['servers']
-else
-  bareos_sd = search(:node, storage_search_query)
-  bareos_dir = search(:node, dir_search_query)
+dir_search_result = search(:node, dir_search_query)
+if dir_search_result.empty?
+  dir_search_result = search(:node, "fqdn:#{node['fqdn']}")
 end
 
 # Create the custom config directory and placeholder file
@@ -67,15 +68,12 @@ template '/etc/bareos/bareos-sd.conf' do
   owner 'bareos'
   group 'bareos'
   variables(
-    bareos_sd: bareos_sd,
-    bareos_dir: bareos_dir
+    bareos_sd: storage_search_result,
+    bareos_dir: dir_search_result
   )
   sensitive node['bareos']['storage']['sensitive_configs']
   only_if { File.exist?('/etc/bareos/bareos-sd.d/sd_helper.conf') }
 end
-
-# Experimental Tape Autochanger Support
-include_recipe 'chef-bareos::autochanger' if node['bareos']['storage']['autochanger_enabled']
 
 # Test Config before restarting SD
 execute 'restart-sd' do

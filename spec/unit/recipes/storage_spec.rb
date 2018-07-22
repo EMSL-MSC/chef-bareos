@@ -13,7 +13,7 @@ describe 'chef-bareos::storage' do
   supported_platforms.each do |platform, versions|
     versions.each do |version|
       context "on an #{platform.capitalize}-#{version} box" do
-        let(:chef_run) do
+        cached(:chef_run) do
           runner = ChefSpec::ServerRunner.new(platform: platform, version: version)
           runner.converge(described_recipe)
         end
