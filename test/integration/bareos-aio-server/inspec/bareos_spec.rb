@@ -18,23 +18,26 @@ describe bash("echo 'status director' | bconsole") do
 end
 
 # Check if the graphite plugin was installed
-describe file('/usr/sbin/bareos-graphite-poller.py') do
+plugin_dir = '/opt/bareos_contrib/misc/performance/graphite'
+
+describe file("#{plugin_dir}/bareos-graphite-poller.py") do
   its('type') { should cmp 'file' }
+  its('content') { should match /BAREOS/ }
   it { should exist }
 end
 
-describe file('/etc/bareos/graphite-poller.conf') do
+describe file("#{plugin_dir}/graphite-poller.conf") do
   it { should exist }
   its('type') { should cmp 'file' }
   its('content') { should match /\[director\]/ }
   its('content') { should match /\[graphite\]/ }
 end
 
-describe file('/usr/sbin/bareos-graphite-poller.py') do
-  its('content') { should match /BAREOS/ }
-end
-
-describe crontab('root').commands('/usr/sbin/bareos-graphite-poller.py -c /etc/bareos/graphite-poller.conf >/dev/null 2>&1') do
+describe crontab('root').commands(
+  "source /opt/bareos_graphite_venv/bin/activate && \
+  #{plugin_dir}/bareos-graphite-poller.py -c \
+  #{plugin_dir}/graphite-poller.conf >/dev/null 2>&1"
+) do
   its('hours') { should cmp '*' }
   its('minutes') { should cmp '*' }
 end
