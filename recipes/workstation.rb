@@ -19,17 +19,15 @@
 
 # Install bconsole from repo
 include_recipe 'chef-bareos::repo'
-package 'bareos-bconsole' do
-  action :install
-end
+package 'bareos-bconsole'
 
 # Find director(s)
+
 dir_search_query = node['bareos']['director']['dir_search_query']
-bareos_dir = if Chef::Config[:solo]
-               node['bareos']['director']['servers']
-             else
-               search(:node, dir_search_query)
-             end
+dir_search_result = search(:node, dir_search_query)
+if dir_search_result.empty?
+  dir_search_result = search(:node, "fqdn:#{node['fqdn']}")
+end
 
 # bconsole config
 template '/etc/bareos/bconsole.conf' do
@@ -38,7 +36,7 @@ template '/etc/bareos/bconsole.conf' do
   owner 'bareos'
   group 'bareos'
   variables(
-    bareos_dir: bareos_dir
+    bareos_dir: dir_search_result
   )
   sensitive node['bareos']['workstation']['sensitive_configs']
 end

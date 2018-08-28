@@ -6,7 +6,7 @@ description       'Installs/Configures BAREOS - Backup Archiving REcovery Open S
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 issues_url        'https://github.com/sitle/chef-bareos/issues'
 source_url        'https://github.com/sitle/chef-bareos.git'
-version           '4.0.0'
+version           '4.0.1'
 
 chef_version      '>= 13.4.19'
 
@@ -16,7 +16,6 @@ supports          'redhat', '>= 6'
 supports          'centos', '>= 6'
 
 depends           'chef-sugar'
-depends           'openssl', '>= 4.0'
 depends           'postgresql', '~> 7.0'
 depends           'poise-git'
 depends           'poise-python'
